@@ -1,7 +1,7 @@
 version: 2
 
 orbs:
-  heroku: circleci/heroku@0.0.10.
+  heroku: circleci/heroku@1.2.3
 
 jobs:
   build:
@@ -16,6 +16,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - dependencies-
       - run: yarn global add node-gyp && yarn install
+      - heroku/install
       - save_cache:
           paths:
             - node_modules
@@ -188,3 +189,9 @@ workflows:
       - heroku/deploy-via-git: 
           requires:
             - build
+            - lint
+            - back-test-e2e
+            - back-test-unit
+          filters:
+            branches:
+              only: main
