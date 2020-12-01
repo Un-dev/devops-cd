@@ -186,8 +186,8 @@ workflows:
             branches:
               only: main
       - deploy:
-        requires:
-          - build
+          requires:
+            - build
       - heroku/deploy-via-git: 
           requires:
             - deploy
