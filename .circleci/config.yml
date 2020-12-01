@@ -16,7 +16,6 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - dependencies-
       - run: yarn global add node-gyp && yarn install
-      - heroku/install
       - save_cache:
           paths:
             - node_modules
@@ -118,11 +117,11 @@ jobs:
             docker tag app $DOCKER_HUB_USER_ID/my-awesome-ci-expr:latest
             docker push $DOCKER_HUB_USER_ID/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
             docker push $DOCKER_HUB_USER_ID/my-awesome-ci-expr:latest
-  smoketest:
-    docker:
-      - image: buildpack-deps:trusty
+  deploy:
+    executor: heroku/default
     steps:
       - checkout
+      - heroku/install
       - run:
           name: Smoke Test
           command: | 
@@ -186,9 +185,12 @@ workflows:
           filters:
             branches:
               only: main
+      - deploy:
+        requires:
+          - build
       - heroku/deploy-via-git: 
           requires:
-            - build
+            - deploy
             - lint
             - back-test-e2e
             - back-test-unit
