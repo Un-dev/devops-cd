@@ -54,7 +54,7 @@ jobs:
           at: /tmp
       - run:
           name: Deploy app
-          command: echo todo && false
+          command: git push heroku main
   back-test-unit:
     docker:
       - image: circleci/node:dubnium-browsers
