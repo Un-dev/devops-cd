@@ -57,7 +57,7 @@ jobs:
           command: |
             ls -al /tmp
             sudo npm install -g --silent netlify-cli
-            netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --dir=/tmp/server-doc --site tp-devops
+            netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --dir=/tmp/server-doc --site $SITEID
   back-test-unit:
     docker:
       - image: circleci/node:dubnium-browsers
