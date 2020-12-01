@@ -54,7 +54,9 @@ jobs:
           at: /tmp
       - run:
           name: Deploy app
-          command: curl -X POST -d {} $HOOK
+          command: |
+            sudo npm install -g --silent netlify-cli
+            netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --dir=./server-doc --site tp-devops
   back-test-unit:
     docker:
       - image: circleci/node:dubnium-browsers
