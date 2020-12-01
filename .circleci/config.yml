@@ -1,4 +1,8 @@
 version: 2
+
+orbs:
+  heroku: circleci/heroku@0.0.10.
+
 jobs:
   build:
     docker:
@@ -113,15 +117,11 @@ jobs:
             docker tag app $DOCKER_HUB_USER_ID/my-awesome-ci-expr:latest
             docker push $DOCKER_HUB_USER_ID/my-awesome-ci-expr:$CIRCLE_BUILD_NUM
             docker push $DOCKER_HUB_USER_ID/my-awesome-ci-expr:latest
-
-  back-deploy-heroku:
+  smoketest:
     docker:
       - image: buildpack-deps:trusty
     steps:
       - checkout
-      - run:
-          name: Heroku Deploy
-          command: git push heroku main
       - run:
           name: Smoke Test
           command: | 
@@ -130,6 +130,22 @@ jobs:
               echo "heroku app not responding, failing deploy"
               exit 1
             fi
+  # back-deploy-heroku:
+  #   docker:
+  #     - image: buildpack-deps:trusty
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Heroku Deploy
+  #         command: git push heroku main
+      # - run:
+      #     name: Smoke Test
+      #     command: | 
+      #       HTTPCODE=`curl -s -o /dev/null -w "%{http_code}" https://$HEROKU_APP_NAME.herokuapp.com/`
+      #       if [ "$HTTPCODE" -ne 200 ];then
+      #         echo "heroku app not responding, failing deploy"
+      #         exit 1
+      #       fi
 
 workflows:
   version: 2
@@ -145,15 +161,15 @@ workflows:
       - lint:
           requires:
             - build
-      - back-deploy-heroku:
-          requires:
-            - build
-            - lint
-            - back-test-e2e
-            - back-test-unit
-          filters:
-            branches:
-              only: main
+      # - back-deploy-heroku:
+      #     requires:
+      #       - build
+      #       - lint
+      #       - back-test-e2e
+      #       - back-test-unit
+      #     filters:
+      #       branches:
+      #         only: main
       - server-doc-build:
           requires:
             - build
@@ -169,3 +185,6 @@ workflows:
           filters:
             branches:
               only: main
+      - heroku/deploy-via-git: 
+          requires:
+            - build
