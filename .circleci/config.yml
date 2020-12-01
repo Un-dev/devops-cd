@@ -55,7 +55,7 @@ jobs:
       - run:
           name: Deploy app
           command: |
-            ls -al ..
+            ls -al /tmp
             sudo npm install -g --silent netlify-cli
             netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --dir=../tmp/server-doc --site tp-devops
   back-test-unit:
