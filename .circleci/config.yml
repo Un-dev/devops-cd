@@ -57,7 +57,6 @@ jobs:
           command: |
             ls
             sudo npm install -g --silent netlify-cli
-          command: |  
             netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --dir=./server-doc --site tp-devops
   back-test-unit:
     docker:
